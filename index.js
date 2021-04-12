@@ -20,19 +20,19 @@ require('dotenv').config();
 
 const invJSON = [];
 
-// 
-// app = express();
-//
-// // Schedule tasks to be run on the server.
-// cron.schedule('30 19 * * *', function() {
-//   var currentDateTime = new Date().toJSON();
-//   console.log('Running file sync at' + currentDateTime);
-//   readFromFile();
-// });
-//
-// app.listen(3000);
 
-readFromFile();
+app = express();
+
+// Schedule tasks to be run on the server.
+cron.schedule('30 19 * * *', function() {
+  var currentDateTime = new Date().toJSON();
+  console.log('Running file sync at' + currentDateTime);
+  readFromFile();
+});
+
+app.listen(3000);
+
+// readFromFile();
 
 async function readFromFile(){
 
