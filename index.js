@@ -23,16 +23,16 @@ const invJSON = [];
 
 app = express();
 
-// Schedule tasks to be run on the server.
-// cron.schedule('00 18 * * *', function() {
-//   var currentDateTime = new Date().toJSON();
-//   console.log('Running file sync at' + currentDateTime);
-//   readFromFile();
-// });
-//
-// app.listen(3000);
+Schedule tasks to be run on the server.
+cron.schedule('00 18 * * *', function() {
+  var currentDateTime = new Date().toJSON();
+  console.log('Running file sync at' + currentDateTime);
+  readFromFile();
+});
 
-readFromFile();
+app.listen(3000);
+
+// readFromFile();
 
 async function readFromFile(){
 
