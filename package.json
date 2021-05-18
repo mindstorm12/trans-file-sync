@@ -4,7 +4,7 @@
   "description": "App to setup cron job to update database daily",
   "main": "index.js",
   "scripts": {
-      "start": "node ./index.js",
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Abdul Patel",
@@ -19,6 +19,8 @@
     "mongodb": "^3.6.5",
     "node-cron": "^3.0.0",
     "qs": "^6.5.2",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "sftp-upload": "^1.0.3",
+    "ssh2-sftp-client": "^6.0.1"
   }
 }

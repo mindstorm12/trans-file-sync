@@ -16,6 +16,8 @@ const qs = require("qs");
 const cron = require('node-cron');
 const express = require('express');
 const axios = require('axios');
+const Client = require('ssh2-sftp-client');
+
 require('dotenv').config();
 
 const invJSON = [];
@@ -24,7 +26,7 @@ const invJSON = [];
 app = express();
 
 //Schedule tasks to be run on the server.
-cron.schedule('30 21 * * *', function() {
+cron.schedule('00 18 * * *', function() {
   var currentDateTime = new Date().toJSON();
   console.log('Running file sync at' + currentDateTime);
   readFromFile();
@@ -49,6 +51,7 @@ fs.createReadStream(process.env.READ_STREAM)
             downloadImgFiles(invJSON);
             exportSelecTrucks(invJSON, function(){
               uploadSelecTrucks();
+              uploadArDesigns();
             });
       });
     });
@@ -215,9 +218,17 @@ function exportSelecTrucks(invJSON, callback){
 const ws = fs.createWriteStream("exportdata/tstcexport.csv");
       //export many documents based on data values
 var exportArray = [];
+var itemCity = "";
       invJSON.forEach((item, i) => {
         if (item.Photos && item.categorie == 'TRK' && item.xCondition == 'Used' && item.xType == 'Truck' && item.xSellingStatus == 'Available'){
 
+//set City
+if ( item.xLotLocation.toLowerCase() == 'bergen'){
+  itemCity = 'Winnipeg';
+} else {
+  itemCity = item.xLotLocation
+}
+//end of setting city
 
 exportArray.push({
   buffer_id:item.StockNo,
@@ -245,9 +256,9 @@ exportArray.push({
   ExtNotes:'',
   RearEndRatio:item.xRearAxleRatio,
   Color:item.xColorExterior,
-  Odometer:item.xOdometer,
+  Odometer:parseInt(item.xOdometer),
   Dealership:'Transolutions Truck Centres Ltd.',
-  City:'Winnipeg',
+  City:itemCity,
   State:'MB',
   LastEditDate:'',
   Photos:item.Photos,
@@ -269,4 +280,48 @@ exportArray.push({
 
 function uploadSelecTrucks(){
   console.log("Selectrucks is being uploaded");
+  let sftp = new Client();
+
+
+  let data = fs.createReadStream('./exportdata/tstcexport.csv');
+  let remote = 'tstcexport.csv';
+
+  sftp.connect({
+    host: 'ftp02.c2data.com',
+    // port: '8080',
+    username: 'DTR_winni',
+    password: 'WB8_s5i0D'
+  }).then(() => {
+     return sftp.put(data, remote);
+  }).then(data => {
+    console.log(data,' - Data File has been uploaded');
+     return sftp.end();
+  }).catch(err => {
+    console.log(err, 'catch error');
+  });
+
+}
+
+function uploadArDesigns(){
+
+  let sftp = new Client();
+
+
+  let data = fs.createReadStream('./exportdata/tstcexport.csv');
+  let remote = 'tstcexport.csv';
+
+  sftp.connect({
+    host: '107.180.60.78',
+    // port: '8080',
+    username: 'avs1l8pmwy3l',
+    password: '1043Canada@358'
+  }).then(() => {
+     return sftp.put(data, remote);
+  }).then(data => {
+    console.log(data,' - Data File has been uploaded');
+     return sftp.end();
+  }).catch(err => {
+    console.log(err, 'catch error');
+  });
+
 }
