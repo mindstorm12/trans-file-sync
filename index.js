@@ -20,14 +20,11 @@ const Client = require('ssh2-sftp-client');
 
 require('dotenv').config();
 
-const invJSON = [];
-
-
 app = express();
 
 //Schedule tasks to be run on the server.
 cron.schedule('00 18 * * *', function() {
-  var currentDateTime = new Date().toJSON();
+  let currentDateTime = new Date().toJSON();
   console.log('Running file sync at' + currentDateTime);
   readFromFile();
 });
@@ -37,6 +34,8 @@ app.listen(3000);
 // readFromFile();
 
 async function readFromFile(){
+
+let invJSON = [];
 
   //read from file
 fs.createReadStream(process.env.READ_STREAM)
@@ -136,7 +135,6 @@ function downloadImgFiles(invJSON){
                 console.log(item2 + " File does not exist")
               }
               });
-
             }
           })
           .catch(function (error) {
@@ -305,7 +303,6 @@ function uploadSelecTrucks(){
 function uploadArDesigns(){
 
   let sftp = new Client();
-
 
   let data = fs.createReadStream('./exportdata/tstcexport.csv');
   let remote = 'tstcexport.csv';
