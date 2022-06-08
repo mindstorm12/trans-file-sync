@@ -23,7 +23,7 @@ require('dotenv').config();
 app = express();
 
 //Schedule tasks to be run on the server.
-cron.schedule('00 13 * * *', function() {
+cron.schedule('00 07 * * *', function() {
   let currentDateTime = new Date().toJSON();
   console.log('Running file sync at' + currentDateTime);
   readFromFile();
